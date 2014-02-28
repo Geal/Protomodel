@@ -3,19 +3,6 @@
   (:use [clojure.core.logic])
   (:use [clojure.core.logic.pldb]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
-
-(foo "aa")
-
-(run* [q]
-        (== q true))
-
-(run* [q]
-        (== q 1))
-
 (db-rel user p)
 
 (def users
