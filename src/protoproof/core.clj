@@ -11,7 +11,6 @@
 (foo "aa")
 
 (run* [q]
-(db-rel user p)
         (== q true))
 
 (run* [q]
@@ -29,26 +28,36 @@
 
 (db-rel generates u x)
 
-(def knowledge
-  (db
-    [generates 'Alice 'abc]
-    [generates 'Bob 'def]
-  )
-)
-
-
 (db-rel sendmsg a b x)
 
 (defn knows [u x]
   (conde
-    (generates u x)
+    ((generates u x))
     ((fresh [a]
       (generates a x)
       (sendmsg a u x)
     ))
   )
 )
+
+(def knowledge
+  (db
+    [generates 'Alice 'abc]
+    [generates 'Bob 'def2]
+    [sendmsg 'Alice 'Bob 'abc]
+  )
+)
+
+
+
+
+(defn tst [q]
+  (all (user q) (knows q 'def2))
+)
+
+
 (with-dbs [users knowledge]
-  (run* [q] (user q) (knows q 'abc))
+  ;(run* [q] (tst q))
+  (run* [q] (all (user q) (knows q 'abc)))
 )
 
