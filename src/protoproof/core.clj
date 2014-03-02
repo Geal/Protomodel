@@ -15,23 +15,36 @@
 
 (db-rel generates u x)
 
-(db-rel sendmsg a b x)
+(db-rel transport tr)
+(db-rel listener tr u)
+(db-rel sender tr u)
+
+(db-rel sendmsg tr a b x)
 
 (defn knows [u x]
   (conde
     ((generates u x))
-    ((fresh [a]
+    ((fresh [a tr]
+      (transport tr)
       (generates a x)
-      (sendmsg a u x)
+      (conde
+        ((sendmsg tr a u x))
+        ((fresh [b]
+          (listener tr u)
+          (sendmsg tr a b x)
+        ))
+      )
     ))
   )
 )
 
 (def knowledge
   (db
+    [transport 'tr]
     [generates 'Alice 'abc]
     [generates 'Bob 'def2]
-    [sendmsg 'Alice 'Bob 'abc]
+    [listener 'tr 'Eve]
+    [sendmsg 'tr 'Alice 'Bob 'abc]
   )
 )
 
@@ -44,7 +57,6 @@
 
 
 (with-dbs [users knowledge]
-  ;(run* [q] (tst q))
   (run* [q] (all (user q) (knows q 'abc)))
 )
 
