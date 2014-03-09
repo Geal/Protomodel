@@ -35,6 +35,7 @@
   )
 )
 
+(db-rel gpow gx x)
 ;(defn knows [u x]
 ;  (conde
 ;    ((generates u x))
@@ -43,6 +44,18 @@
 ;  )
 ;)
 
+; "calculate" knowledge: data obtained from operations
+(defn knowc [u x]
+  (conde
+    ((generates u x))
+    ((fresh [w]
+      (generates u w)
+      (gpow x w)
+    ))
+  )
+)
+
+; "transport" knwoledge
 (defn knows [u x]
   (conde
     ((generates u x))
@@ -64,6 +77,7 @@
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
+    [gpow 'y 'abc]
   )
 )
 
@@ -71,8 +85,10 @@
   (all (user q) (knows q 'def2))
 )
 
-
 (with-dbs [users knowledge]
   (run* [q] (all (user q) (knows q 'abc)))
 )
 
+(with-dbs [users knowledge]
+  (run* [q] (all (fresh [x] (gpow x 'abc) (knowc q x))))
+)
