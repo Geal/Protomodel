@@ -21,6 +21,28 @@
 
 (db-rel sendmsg tr a b x)
 
+;(defn recv [tr u x]
+;  (fresh[a]
+;    (knows a x)
+;    (sendmsg tr a u x)
+;  )
+;)
+
+(defn eavesdrop [tr e x]
+  (fresh [a b]
+    (listener tr e)
+    (sendmsg tr a b x)
+  )
+)
+
+;(defn knows [u x]
+;  (conde
+;    ((generates u x))
+;    ((fresh [tr] (recv tr u x)))
+;    ((fresh [tr] (eavesdrop tr u x)))
+;  )
+;)
+
 (defn knows [u x]
   (conde
     ((generates u x))
@@ -29,10 +51,7 @@
       (generates a x)
       (conde
         ((sendmsg tr a u x))
-        ((fresh [b]
-          (listener tr u)
-          (sendmsg tr a b x)
-        ))
+        (( eavesdrop tr u x))
       )
     ))
   )
@@ -47,9 +66,6 @@
     [sendmsg 'tr 'Alice 'Bob 'abc]
   )
 )
-
-
-
 
 (defn tst [q]
   (all (user q) (knows q 'def2))
