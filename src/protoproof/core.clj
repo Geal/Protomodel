@@ -92,16 +92,12 @@
   )
 )
 
-(defn tst [q]
-  (all (user q) (knows q 'def2))
-)
-
 (with-dbs [users knowledge]
   (run* [q] (all (user q) (knows q 'abc)))
 )
 
 (with-dbs [users knowledge]
-  (run* [q] (all (fresh [x] (gpow 'g 'abc x) (knowc q x))))
+  (run* [q] (all (fresh [x] (power 'g x 'y) (knows q x))))
 )
 
 (with-dbs [users knowledge]
