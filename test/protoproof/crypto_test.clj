@@ -41,7 +41,6 @@
   )
 )
 
-
 (deftest gpow-test
   (testing "exponentiation is commutative"
     (is (= '(b a)
@@ -49,5 +48,42 @@
               (run* [q] (all (fresh [x] (gpow x q 'gab))))
             )
            ) )
+  )
+)
+
+(def symmetric-crypto
+  (db
+    [generates 'Alice 'abc]
+    [generates 'Alice 'k]
+    [sym-enc 'aes 'k 'abc 'ciphertext]
+  )
+)
+
+(deftest sym-enc-test
+  (testing "Symmetric encryption"
+    (is (= '(Alice)
+            (with-dbs [symmetric-crypto]
+              (run* [q] (all (knows q 'ciphertext))))
+        )
+    )
+  )
+)
+
+(def symmetric-crypto-bob
+  (db
+    [sym-enc 'aes 'k 'abc 'ciphertext]
+    ; smulate knowledge without worrying about transmission
+    [generates 'Bob 'k]
+    [generates 'Bob 'ciphertext]
+  )
+)
+
+(deftest sym-dec-test
+  (testing "Symmetric decryption"
+    (is (= '(Bob)
+            (with-dbs [symmetric-crypto-bob]
+              (run* [q] (all (knows q 'ciphertext))))
+        )
+    )
   )
 )
