@@ -16,3 +16,28 @@
     (sendmsg tr a b x)
   )
 )
+
+(defn basic-recv [transport bob message]
+  (fresh [alice]
+    (sendmsg transport alice bob message)
+  )
+)
+
+(defmacro know-transport-basic [u x]
+  '(fresh [a tr]
+    (transport tr)
+    (generates a x)
+    (basic-recv tr u x)
+  )
+)
+
+(defmacro know-transport-eavesdropper [u x]
+  '(fresh [a tr]
+    (transport tr)
+    (generates a x)
+    (conde
+      ((basic-recv tr u x))
+      ((eavesdrop tr u x))
+    )
+  )
+)

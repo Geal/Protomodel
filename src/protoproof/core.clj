@@ -34,14 +34,15 @@
   (tabled [u x]
     (conde
       [(generates u x)]
-      [(fresh [a tr]
-        (transport tr)
-        (generates a x)
-        (conde
-          ((sendmsg tr a u x))
-          ((eavesdrop tr u x))
-        )
-      )]
+      [(know-transport-eavesdropper u x)]
+      ;[(fresh [a tr]
+      ;  (transport tr)
+      ;  (generates a x)
+      ;  (conde
+      ;    ((basic-recv tr u x))
+      ;    ((eavesdrop tr u x))
+      ;  )
+      ;)]
       [(knowc u x)]
     )
   )

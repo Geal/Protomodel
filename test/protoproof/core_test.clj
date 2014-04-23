@@ -32,7 +32,7 @@
 (deftest eavesdrop-test
   (testing "Eve can eavesdrop"
     (is (= '(Alice Bob Eve) (
-      with-dbs [users knowledge]
+      with-dbs [users protocol]
         (run* [q] (all (knows q 'y)))
       ))
     )
