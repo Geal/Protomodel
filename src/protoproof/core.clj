@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [==])
   (:use [clojure.core.logic])
   (:use [clojure.core.logic.pldb])
+  (:use [protoproof.crypto])
 )
 
 (db-rel user p)
@@ -36,30 +37,7 @@
   )
 )
 
-(db-rel power g x gx)
-(def gpow
-  (tabled [g x gx]
-    (conde
-      [(power g x gx)]
-      [(fresh [h, y, hx, hy]
-        (gpow h x hx)
-        (gpow h y g)
-        (gpow hx y gx)
-      )]
-    )
-  )
-)
-
 ; "calculate" knowledge: data obtained from operations
-(defn knowc [u x]
-  (conde
-    ((generates u x))
-    ((fresh [g w]
-      (generates u w)
-      (gpow g w x)
-    ))
-  )
-)
 
 (def knows
   (tabled [u x]

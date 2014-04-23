@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [==])
   (:require [clojure.test :refer :all]
             [protoproof.core :refer :all]
+            [protoproof.crypto :refer :all]
   )
   (:use     [clojure.core.logic.pldb]
             [clojure.core.logic :exclude [is]]))
