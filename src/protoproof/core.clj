@@ -36,7 +36,7 @@
   )
 )
 
-(db-rel gpow gx x)
+(db-rel gpow x gx)
 
 ; "calculate" knowledge: data obtained from operations
 (defn knowc [u x]
@@ -44,7 +44,7 @@
     ((generates u x))
     ((fresh [w]
       (generates u w)
-      (gpow x w)
+      (gpow w x)
     ))
   )
 )
@@ -63,7 +63,7 @@
       )]
       [(fresh [w]
         (knows u w)
-        (gpow x w)
+        (gpow w x)
       )]
     )
   )
@@ -76,7 +76,7 @@
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
-    [gpow 'y 'abc]
+    [gpow 'abc 'y]
   )
 )
 
@@ -89,10 +89,9 @@
 )
 
 (with-dbs [users knowledge]
-  (run* [q] (all (fresh [x] (gpow x 'abc) (knowc q x))))
+  (run* [q] (all (fresh [x] (gpow 'abc x) (knowc q x))))
 )
 
-; test x is a g^a
 (with-dbs [users knowledge]
   (run* [q] (all (knows q 'y)))
 )
