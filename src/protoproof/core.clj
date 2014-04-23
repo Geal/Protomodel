@@ -51,10 +51,7 @@
           (( eavesdrop tr u x))
         )
       )]
-      [(fresh [g w]
-        (knows u w)
-        (gpow g w x)
-      )]
+      [(knowc u x)]
     )
   )
 )

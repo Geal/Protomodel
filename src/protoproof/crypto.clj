@@ -18,3 +18,16 @@
     )
   )
 )
+
+(db-rel hash-alg x hx)
+
+(defmacro knowc [u x]
+  '(conde
+    [(fresh [g w]
+      (knows u w)
+      (gpow g w x)
+    )]
+  )
+)
+
+(macroexpand '(knowc u x))
