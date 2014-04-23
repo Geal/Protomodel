@@ -36,15 +36,15 @@
   )
 )
 
-(db-rel gpow x gx)
+(db-rel gpow g x gx)
 
 ; "calculate" knowledge: data obtained from operations
 (defn knowc [u x]
   (conde
     ((generates u x))
-    ((fresh [w]
+    ((fresh [g w]
       (generates u w)
-      (gpow w x)
+      (gpow g w x)
     ))
   )
 )
@@ -61,9 +61,9 @@
           (( eavesdrop tr u x))
         )
       )]
-      [(fresh [w]
+      [(fresh [g w]
         (knows u w)
-        (gpow w x)
+        (gpow g w x)
       )]
     )
   )
@@ -76,7 +76,7 @@
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
-    [gpow 'abc 'y]
+    [gpow 'g 'abc 'y]
   )
 )
 
@@ -89,7 +89,7 @@
 )
 
 (with-dbs [users knowledge]
-  (run* [q] (all (fresh [x] (gpow 'abc x) (knowc q x))))
+  (run* [q] (all (fresh [x] (gpow 'g 'abc x) (knowc q x))))
 )
 
 (with-dbs [users knowledge]
