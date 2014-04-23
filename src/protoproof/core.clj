@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [==])
   (:use [clojure.core.logic])
   (:use [clojure.core.logic.pldb])
-  (:require [clojure.test]))
+)
 
 (db-rel user p)
 
@@ -97,13 +97,3 @@
   (run* [q] (all (knows q 'y)))
 )
 
-(clojure.test/deftest test-adder
-  (clojure.test/is (= ('Alice 'Bob 'Eve)  (
-    with-dbs [users knowledge]
-      (run* [q] (all (knows q 'y)))
-                           ))
-  ))
-;(with-dbs [users knowledge]
-;  (run* [q] (all (user q) (knows q 'abc)))
-;)
-(clojure.test/run-tests)
