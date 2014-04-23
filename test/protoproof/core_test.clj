@@ -22,7 +22,7 @@
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
-    [gpow 'y 'abc]
+    [power 'g 'abc 'y]
   )
 )
 
@@ -36,3 +36,22 @@
   )
 )
 
+
+(def powers
+  (db
+      [power 'g 'a 'ga]
+      [power 'g 'b 'gb]
+      [power 'ga 'b 'gab]
+  )
+)
+
+
+(deftest gpow-test
+  (testing "exponentiation is commutative"
+    (is (= '(b a)
+            (with-dbs [powers]
+              (run* [q] (all (fresh [x] (gpow x q 'gab))))
+            )
+           ) )
+  )
+)

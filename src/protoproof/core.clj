@@ -36,7 +36,19 @@
   )
 )
 
-(db-rel gpow g x gx)
+(db-rel power g x gx)
+(def gpow
+  (tabled [g x gx]
+    (conde
+      [(power g x gx)]
+      [(fresh [h, y, hx, hy]
+        (gpow h x hx)
+        (gpow h y g)
+        (gpow hx y gx)
+      )]
+    )
+  )
+)
 
 ; "calculate" knowledge: data obtained from operations
 (defn knowc [u x]
@@ -76,7 +88,7 @@
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
-    [gpow 'g 'abc 'y]
+    [power 'g 'abc 'y]
   )
 )
 
