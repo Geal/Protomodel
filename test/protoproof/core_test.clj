@@ -3,6 +3,7 @@
   (:require [clojure.test :refer :all]
             [protoproof.core :refer :all]
             [protoproof.crypto :refer :all]
+            [protoproof.transport :refer :all]
   )
   (:use     [clojure.core.logic.pldb]
             [clojure.core.logic :exclude [is]]))
@@ -13,6 +14,7 @@
     [user 'Alice]
     [user 'Bob]
     [user 'Eve]
+    [user 'Mallory]
   )
 )
 

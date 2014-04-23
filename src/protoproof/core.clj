@@ -3,6 +3,7 @@
   (:use [clojure.core.logic])
   (:use [clojure.core.logic.pldb])
   (:use [protoproof.crypto])
+  (:use [protoproof.transport])
 )
 
 (db-rel user p)
@@ -12,16 +13,13 @@
     [user 'Alice]
     [user 'Bob]
     [user 'Eve]
+    [user 'Mallory]
   )
 )
 
 (db-rel generates u x)
 
-(db-rel transport tr)
-(db-rel listener tr u)
-(db-rel sender tr u)
 
-(db-rel sendmsg tr a b x)
 
 ;(defn recv [tr u x]
 ;  (fresh[a]
@@ -29,13 +27,6 @@
 ;    (sendmsg tr a u x)
 ;  )
 ;)
-
-(defn eavesdrop [tr e x]
-  (fresh [a b]
-    (listener tr e)
-    (sendmsg tr a b x)
-  )
-)
 
 ; "calculate" knowledge: data obtained from operations
 
@@ -48,7 +39,7 @@
         (generates a x)
         (conde
           ((sendmsg tr a u x))
-          (( eavesdrop tr u x))
+          ((eavesdrop tr u x))
         )
       )]
       [(knowc u x)]
