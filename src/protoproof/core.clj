@@ -19,15 +19,6 @@
 
 (db-rel generates u x)
 
-
-
-;(defn recv [tr u x]
-;  (fresh[a]
-;    (knows a x)
-;    (sendmsg tr a u x)
-;  )
-;)
-
 ; "calculate" knowledge: data obtained from operations
 
 (def knows
@@ -35,14 +26,6 @@
     (conde
       [(generates u x)]
       [(know-transport-eavesdropper u x)]
-      ;[(fresh [a tr]
-      ;  (transport tr)
-      ;  (generates a x)
-      ;  (conde
-      ;    ((basic-recv tr u x))
-      ;    ((eavesdrop tr u x))
-      ;  )
-      ;)]
       [(knowc u x)]
     )
   )

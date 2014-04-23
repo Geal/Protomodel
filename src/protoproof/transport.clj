@@ -7,7 +7,6 @@
 (db-rel transport tr)
 (db-rel listener tr u)
 (db-rel sender tr u)
-(db-rel intercepter tr u)
 (db-rel sendmsg tr a b x)
 
 (defn eavesdrop [tr e x]
@@ -17,7 +16,7 @@
   )
 )
 
-(defn basic-recv [transport bob message]
+(defn recv-basic [transport bob message]
   (fresh [alice]
     (sendmsg transport alice bob message)
   )
@@ -27,7 +26,7 @@
   '(fresh [a tr]
     (transport tr)
     (generates a x)
-    (basic-recv tr u x)
+    (recv-basic tr u x)
   )
 )
 
@@ -36,7 +35,7 @@
     (transport tr)
     (generates a x)
     (conde
-      ((basic-recv tr u x))
+      ((recv-basic tr u x))
       ((eavesdrop tr u x))
     )
   )
