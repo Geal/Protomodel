@@ -35,6 +35,14 @@
   )
 )
 
+(db-rel asym-sign algorithm priv message signature)
+(defn asym-verify [algorithm pub message signature]
+  (fresh [priv]
+    (asym-keys algorithm priv pub)
+    (asym-sign algorithm priv message signature)
+  )
+)
+
 (defmacro knowc [u x]
   '(conde
     ; g is a known power
