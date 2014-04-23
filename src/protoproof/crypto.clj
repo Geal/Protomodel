@@ -26,6 +26,15 @@
   (sym-enc algorithm k plaintext ciphertext)
 )
 
+(db-rel asym-keys algorithm priv pub)
+(db-rel asym-enc algorithm pub plaintext ciphertext)
+(defn asym-dec [algorithm priv ciphertext plaintext]
+  (fresh [pub]
+    (asym-keys algorithm priv pub)
+    (asym-enc algorithm pub plaintext ciphertext)
+  )
+)
+
 (defmacro knowc [u x]
   '(conde
     ; g is a known power
@@ -49,7 +58,44 @@
       (knows u k)
       (sym-dec alg k ciphertext x)
     )]
+    ; x is a ciphertext for which we know the public key
+    [(fresh [alg priv pub plaintext]
+      (knows u plaintext)
+      (knows u pub)
+      (asym-keys alg priv pub)
+      (asym-enc alg pub plaintext x)
+    )]
+    [(fresh [alg priv pub ciphertext]
+      (knows u ciphertext)
+      (knows u priv)
+      (asym-keys alg priv pub)
+      (asym-dec alg priv ciphertext x)
+    )]
   )
 )
 
-(macroexpand '(knowc u x))
+;(macroexpand '(knowc u x))
+;(db-rel generates u x)
+;(def asymmetric-encryption
+;  (db
+;    [generates 'Alice 'abc]
+;    [generates 'Alice 'pub]
+;    [asym-keys 'rsa 'priv 'pub]
+;    [asym-enc 'rsa 'pub 'abc 'ciphertext]
+;  )
+;)
+
+;(def knows
+;  (tabled [u x]
+;    (conde
+;      [(generates u x)]
+      ;  [(knowc u x)]
+;    )
+;  )
+;)
+;(with-dbs [asymmetric-encryption]
+;  (run* [q] (all (knows q 'ciphertext)))
+;)
+;(with-dbs [asymmetric-encryption]
+;  (run* [q] (all (fresh [pub] (asym-enc 'rsa pub 'abc q))))
+;)

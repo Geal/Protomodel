@@ -82,7 +82,47 @@
   (testing "Symmetric decryption"
     (is (= '(Bob)
             (with-dbs [symmetric-crypto-bob]
+              (run* [q] (all (knows q 'plaintext))))
+        )
+    )
+  )
+)
+
+(def asymmetric-encryption
+  (db
+    [generates 'Alice 'abc]
+    ;[generates 'Alice 'priv]
+    [generates 'Alice 'pub]
+    [asym-keys 'rsa 'priv 'pub]
+    [asym-enc 'rsa 'pub 'abc 'ciphertext]
+  )
+)
+
+(deftest sym-enc-test
+  (testing "Asymmetric encryption"
+    (is (= '(Alice)
+            (with-dbs [asymmetric-encryption]
               (run* [q] (all (knows q 'ciphertext))))
+        )
+    )
+  )
+)
+
+(def asymmetric-decryption
+  (db
+    [asym-keys 'rsa 'priv 'pub]
+    [asym-enc 'rsa 'pub 'plaintext 'ciphertext]
+    [generates 'Bob 'priv]
+    [generates 'Bob 'pub]
+    [generates 'Bob 'ciphertext]
+  )
+)
+
+(deftest sym-dec-test
+  (testing "Asymmetric decryption"
+    (is (= '(Bob)
+            (with-dbs [asymmetric-decryption]
+              (run* [q] (all (knows q 'plaintext))))
         )
     )
   )
