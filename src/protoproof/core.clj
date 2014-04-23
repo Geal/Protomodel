@@ -1,7 +1,8 @@
 (ns protoproof.core
   (:refer-clojure :exclude [==])
   (:use [clojure.core.logic])
-  (:use [clojure.core.logic.pldb]))
+  (:use [clojure.core.logic.pldb])
+  (:require [clojure.test]))
 
 (db-rel user p)
 
@@ -36,13 +37,6 @@
 )
 
 (db-rel gpow gx x)
-;(defn knows [u x]
-;  (conde
-;    ((generates u x))
-;    ((fresh [tr] (recv tr u x)))
-;    ((fresh [tr] (eavesdrop tr u x)))
-;  )
-;)
 
 ; "calculate" knowledge: data obtained from operations
 (defn knowc [u x]
@@ -55,18 +49,23 @@
   )
 )
 
-; "transport" knwoledge
-(defn knows [u x]
-  (conde
-    ((generates u x))
-    ((fresh [a tr]
-      (transport tr)
-      (generates a x)
-      (conde
-        ((sendmsg tr a u x))
-        (( eavesdrop tr u x))
-      )
-    ))
+(def knows
+  (tabled [u x]
+    (conde
+      [(generates u x)]
+      [(fresh [a tr]
+        (transport tr)
+        (generates a x)
+        (conde
+          ((sendmsg tr a u x))
+          (( eavesdrop tr u x))
+        )
+      )]
+      [(fresh [w]
+        (knows u w)
+        (gpow x w)
+      )]
+    )
   )
 )
 
@@ -92,3 +91,19 @@
 (with-dbs [users knowledge]
   (run* [q] (all (fresh [x] (gpow x 'abc) (knowc q x))))
 )
+
+; test x is a g^a
+(with-dbs [users knowledge]
+  (run* [q] (all (knows q 'y)))
+)
+
+(clojure.test/deftest test-adder
+  (clojure.test/is (= ('Alice 'Bob 'Eve)  (
+    with-dbs [users knowledge]
+      (run* [q] (all (knows q 'y)))
+                           ))
+  ))
+;(with-dbs [users knowledge]
+;  (run* [q] (all (user q) (knows q 'abc)))
+;)
+(clojure.test/run-tests)
