@@ -22,11 +22,24 @@
 (def protocol
   (db
     [transport 'tr]
+    [generates 'Alice 'g]
+    [generates 'Bob 'g]
+    [generates 'Eve 'g]
     [generates 'Alice 'abc]
     [generates 'Bob 'def2]
     [listener 'tr 'Eve]
     [sendmsg 'tr 'Alice 'Bob 'abc]
     [power 'g 'abc 'y]
+  )
+)
+
+(def knows
+  (tabled [u x]
+    (conde
+      [(generates u x)]
+      [(know-transport-eavesdropper u x)]
+      [(knowc u x)]
+    )
   )
 )
 

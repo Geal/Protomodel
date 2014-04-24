@@ -21,15 +21,15 @@
 
 ; "calculate" knowledge: data obtained from operations
 
-(def knows
-  (tabled [u x]
-    (conde
-      [(generates u x)]
-      [(know-transport-eavesdropper u x)]
-      [(knowc u x)]
-    )
-  )
-)
+;(def knows
+;  (tabled [u x]
+;    (conde
+;      [(generates u x)]
+;      [(know-transport-eavesdropper u x)]
+;      [(knowc u x)]
+;    )
+;  )
+;)
 
 (def knowledge
   (db
@@ -42,15 +42,15 @@
   )
 )
 
-(with-dbs [users knowledge]
-  (run* [q] (all (user q) (knows q 'abc)))
-)
+;(with-dbs [users knowledge]
+;  (run* [q] (all (user q) (knows q 'abc)))
+;)
 
-(with-dbs [users knowledge]
-  (run* [q] (all (fresh [x] (power 'g x 'y) (knows q x))))
-)
+;(with-dbs [users knowledge]
+;  (run* [q] (all (fresh [x] (power 'g x 'y) (knows q x))))
+;)
 
-(with-dbs [users knowledge]
-  (run* [q] (all (knows q 'y)))
-)
+;(with-dbs [users knowledge]
+;  (run* [q] (all (knows q 'y)))
+;)
 

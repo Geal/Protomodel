@@ -32,11 +32,31 @@
 (defmacro know-transport-mitm [u x]
   '(fresh [a tr]
     (transport tr)
-    (generates a x)
+    ;(generates a x)
     (conde
-      ((recv-mitm tr u x))
-      ((eavesdrop tr u x))
-      ((eavesdrop-mitm tr u x))
+      [(fresh [a m]
+        (knows a x)
+        (sendmsg tr a u x)
+        (pass tr m x)
+      )]
+      [(fresh [a m original]
+        (knows m x)
+        (sendmsg tr a u original)
+        (mitm tr m original x)
+      )]
+      [(fresh [b]
+        (knows a x)
+        (listener tr u)
+        (sendmsg tr a b x)
+      )]
+      [(fresh [b]
+        (knows a x)
+        (intercepter tr u)
+        (sendmsg tr a b x)
+      )]
+      ;((recv-mitm tr u x))
+      ;((eavesdrop tr u x))
+      ;((eavesdrop-mitm tr u x))
     )
   )
 )

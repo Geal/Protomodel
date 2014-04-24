@@ -47,6 +47,7 @@
   '(conde
     ; g is a known power
     [(fresh [g w]
+      (knows u g)
       (knows u w)
       (gpow g w x)
     )]
