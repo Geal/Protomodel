@@ -45,10 +45,10 @@
 
 (deftest eavesdrop-test
   (testing "Eve can eavesdrop"
-    (is (= '(Alice Bob Eve) (
+    (is (= '(Alice Bob Eve) (sort (
       with-dbs [users protocol]
         (run* [q] (all (knows q 'y)))
-      ))
+      )))
     )
   )
 )
