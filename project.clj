@@ -3,4 +3,5 @@
   :url "http://example.com/FIXME"
   :license {}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/core.logic "0.8.5"]])
+                 [org.clojure/core.logic "0.8.5"]
+                 [org.clojure/test.check "0.5.7"]])
