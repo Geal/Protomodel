@@ -55,7 +55,8 @@
 
 (def usersgen (gen/elements ['Alice 'Bob 'Mallory]))
 (def datagen (gen/elements ['a 'x 'y]))
-(def datagenexcepta (gen/elements ['x 'y]))
+;(def datagenexcepta (gen/elements ['x 'y]))
+(def datagenexcepta (gen/elements ['x]))
 (def sentmsggen (gen/elements
   (with-dbs [usersdb step1]
     (run* [q] (all (fresh [a b] (sendmsg 'tr a b q)) ))
@@ -92,6 +93,16 @@
   (run* [q] (all (knows 'Alice q) ))
 )
 
+(def test-samples-db
+  (prop/for-all [samples (gen/vector relgen)]
+    (= '()
+      (with-dbs [usersdb step1 (apply db samples)]
+        (run* [q] (all (knows 'Bob q) ))
+      )
+    )
+))
+
+(tc/quick-check 100 test-samples-db)
 ;(def samplesdb
 ;  (apply db samples)
 ;)
