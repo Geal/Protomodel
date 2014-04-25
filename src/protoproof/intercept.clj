@@ -34,12 +34,12 @@
     (transport tr)
     ;(generates a x)
     (conde
-      [(fresh [a m]
+      [(fresh [m]
         (knows a x)
         (sendmsg tr a u x)
         (pass tr m x)
       )]
-      [(fresh [a m original]
+      [(fresh [m original]
         (knows m x)
         (sendmsg tr a u original)
         (mitm tr m original x)
@@ -54,9 +54,6 @@
         (intercepter tr u)
         (sendmsg tr a b x)
       )]
-      ;((recv-mitm tr u x))
-      ;((eavesdrop tr u x))
-      ;((eavesdrop-mitm tr u x))
     )
   )
 )
