@@ -55,8 +55,7 @@
 
 (def usersgen (gen/elements ['Alice 'Bob 'Mallory]))
 (def datagen (gen/elements ['a 'x 'y]))
-;(def datagenexcepta (gen/elements ['x 'y]))
-(def datagenexcepta (gen/elements ['x]))
+(def datagenexcepta (gen/elements ['x 'y]))
 (def sentmsggen (gen/elements
   (with-dbs [usersdb step1]
     (run* [q] (all (fresh [a b] (sendmsg 'tr a b q)) ))
@@ -73,7 +72,7 @@
      ;(gen/fmap (fn [[u data]] [generates u data]) (gen/tuple usersgen datagen))
      ;(gen/fmap (fn [[a b data]] [sendmsg 'tr a b data]) (gen/tuple usersgen usersgen datagen))
      (gen/fmap (fn [[data]] [generates 'Mallory data]) (gen/tuple datagenexcepta))
-     (gen/fmap (fn [[data]] [pass 'tr 'Mallory data]) (gen/tuple sentmsggen))
+     ;(gen/fmap (fn [[data]] [pass 'tr 'Mallory data]) (gen/tuple sentmsggen))
      (gen/fmap (fn [[data1 data2]] [mitm 'tr 'Mallory data1 data2]) (gen/tuple sentmsggen datagenexcepta))
     ]
   )
@@ -103,6 +102,7 @@
 ))
 
 (tc/quick-check 100 test-samples-db)
+
 ;(def samplesdb
 ;  (apply db samples)
 ;)
