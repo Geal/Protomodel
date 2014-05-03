@@ -111,7 +111,6 @@
 (tc/quick-check 100 test-drop-db)
 
 
-; negates an and -> needs a not or clause
 (def test-bob-knows-gm
   (prop/for-all [samples (gen/vector relgen)]
     (not
@@ -148,6 +147,40 @@
   )
 )
 
+(with-dbs [usersdb step1 step2]
+  (run* [q] (all (knows 'Alice q) ))
+)
+(with-dbs [usersdb step1 step2]
+  (run* [q] (all (knows 'Bob q) ))
+)
+(with-dbs [usersdb step1 step2]
+  (run* [q] (all (knows 'Mallory q) ))
+)
+
+(def test-mitm-gm
+  (prop/for-all [samples (gen/vector relgen)]
+    (not
+      (and
+        (=
+          (set (with-dbs [usersdb step1 step2 (apply db samples)]
+            (run* [q] (all (knows 'Alice q) ))
+          )) #('a 'g 'ga 'gm 'gam)
+        )
+        (=
+          (set (with-dbs [usersdb step1 step2 (apply db samples)]
+            (run* [q] (all (knows 'Bob q) ))
+          )) #('b 'g 'gb 'gm 'gmb)
+        )
+        ;(= (count (with-dbs [usersdb step1 (apply db samples)]
+        ;    (run* [q] (all (recv-mitm 'tr 'Bob q) ))
+        ;  )) 1
+        ;)
+      )
+    )
+  )
+)
+
+(tc/quick-check 100 test-mitm-gm)
 
 (def step3
   (db
