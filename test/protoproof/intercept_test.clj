@@ -9,7 +9,6 @@
   (:use     [clojure.core.logic.pldb]
             [clojure.core.logic :exclude [is]]))
 
-
 (def usersdb
   (db
     [user 'Alice]
@@ -45,8 +44,9 @@
 
 (def dropmessage
   (db
-    ; intercepter does not let the message pass, it is dropped
     [intercepter 'tr 'Mallory]
+    [sendmsg 'tr 'Bob 'Alice 'def2]
+    [dropm 'tr 'Mallory 'abc]
   )
 )
 
@@ -55,6 +55,16 @@
     (is (= '() (
       with-dbs [users protocol dropmessage]
         (run* [q] (all (recv-mitm 'tr q 'abc)))
+      ))
+    )
+  )
+)
+
+(deftest dropmessage-test
+  (testing "Mallory can drop a message"
+    (is (= '() (
+      with-dbs [users protocol dropmessage]
+        (run* [q] (all (recv-mitm 'tr 'Bob q)))
       ))
     )
   )
@@ -70,29 +80,11 @@
   )
 )
 
-(def passmessage
-  (db
-    ; intercepter does not let the message pass, it is dropped
-    [intercepter 'tr 'Mallory]
-    [pass 'tr 'Mallory 'abc]
-  )
-)
-
-(deftest passmessage-test
-  (testing "Mallory can let a message pass"
-    (is (= '(Bob) (
-      with-dbs [users protocol passmessage]
-        (run* [q] (all (recv-mitm 'tr q 'abc)))
-      ))
-    )
-  )
-)
-
-(deftest passmessage-knows-test
-  (testing "Mallory can let a message pass"
-    (is (= '(g def2 abc) (
-      with-dbs [users protocol passmessage]
-        (run* [q] (all (knows 'Bob q)))
+(deftest dropmessage-knows-abc-test
+  (testing "Mallory can drop a message"
+    (is (= '(Alice Eve Mallory) (
+      with-dbs [users protocol dropmessage]
+        (run* [q] (all (knows q 'abc)))
       ))
     )
   )
@@ -116,11 +108,42 @@
   )
 )
 
+
+(deftest replacemessage-recv-abc-test
+  (testing "Mallory can replace a message"
+    (is (= '() (
+      with-dbs [users protocol replacemessage]
+        (run* [q] (all (recv-mitm 'tr q 'abc)))
+      ))
+    )
+  )
+)
+
 (deftest replacemessage-knows-test
   (testing "Mallory can replace a message"
     (is (= '(g def2 hello) (
       with-dbs [users protocol replacemessage]
         (run* [q] (all (knows 'Bob q)))
+      ))
+    )
+  )
+)
+
+(deftest replacemessage-knows-hello-test
+  (testing "Mallory can replace a message"
+    (is (= '(Mallory Bob) (
+      with-dbs [users protocol replacemessage]
+        (run* [q] (all (knows q 'hello)))
+      ))
+    )
+  )
+)
+
+(deftest replacemessage-knows-abc-test
+  (testing "Mallory can replace a message"
+    (is (= '(Alice Eve Mallory) (
+      with-dbs [users protocol replacemessage]
+        (run* [q] (all (knows q 'abc)))
       ))
     )
   )
