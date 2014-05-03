@@ -23,6 +23,17 @@
   )
 )
 
+(defmacro sentmessage [transport alice bob message]
+  `(conde
+    ((sendmsg ~transport ~alice ~bob ~message))
+    ((respondmsg ~transport ~alice ~bob ~message))
+  )
+)
+
+(macroexpand '(sentmessage tr A B M))
+
+;(defmacro recv-mitm [transport bob message]
+;  `(conde
 (defn recv-mitm [transport bob message]
   (conde
     ; the message was not dropped or replaced
