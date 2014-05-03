@@ -32,6 +32,10 @@
   )
 )
 
+(defn respondmsg [transport alice bob message]
+  fail
+)
+
 (def knows
   (tabled [u x]
     (conde
@@ -41,8 +45,6 @@
     )
   )
 )
-
-;(def respondmsg fail)
 
 (def dropmessage
   (db
@@ -62,7 +64,7 @@
   )
 )
 
-(deftest dropmessage-test
+(deftest dropmessage-recv-bob-test
   (testing "Mallory can drop a message"
     (is (= '() (
       with-dbs [users protocol dropmessage]
