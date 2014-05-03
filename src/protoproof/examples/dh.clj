@@ -12,8 +12,8 @@
   (tabled [u x]
     (conde
       [(generates u x)]
-      [(know-transport-eavesdropper u x)]
-      [(knowc u x)]
+      [(know-transport-eavesdropper knows u x)]
+      [(knowc knows u x)]
     )
   )
 )

@@ -36,11 +36,13 @@
   (tabled [u x]
     (conde
       [(generates u x)]
-      [(know-transport-mitm u x)]
+      [(know-transport-mitm knows u x)]
       ;[(knowc u x)]
     )
   )
 )
+
+;(def respondmsg fail)
 
 (def dropmessage
   (db

@@ -12,8 +12,8 @@
   (tabled [u x]
     (conde
       [(generates u x)]
-      [(know-transport-mitm u x)]
-      [(knowc u x)]
+      [(know-transport-mitm knows u x)]
+      [(knowc knows u x)]
     )
   )
 )

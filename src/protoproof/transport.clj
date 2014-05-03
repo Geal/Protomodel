@@ -22,26 +22,26 @@
   )
 )
 
-(defmacro know-transport-basic [u x]
-  '(fresh [a tr]
-    (transport tr)
-    (knows a x)
-    (sendmsg tr a u x)
+(defmacro know-transport-basic [knows u x]
+  `(fresh [a# tr#]
+    (transport tr#)
+    (~knows a# ~x)
+    (sendmsg tr# a# ~u ~x)
   )
 )
 
-(defmacro know-transport-eavesdropper [u x]
-  '(fresh [a b tr]
-    (transport tr)
+(defmacro know-transport-eavesdropper [knows u x]
+  `(fresh [a# b# tr#]
+    (transport tr#)
     (conde
       [
-       (knows a x)
-       (sendmsg tr a u x)
+       (~knows a# ~x)
+       (sendmsg tr# a# ~u ~x)
       ]
       [
-       (knows a x)
-       (listener tr u)
-       (sendmsg tr a b x)
+       (~knows a# ~x)
+       (listener tr# ~u)
+       (sendmsg tr# a# b# ~x)
       ]
     )
   )

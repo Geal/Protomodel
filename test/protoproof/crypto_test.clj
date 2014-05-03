@@ -11,7 +11,7 @@
   (tabled [u x]
     (conde
       [(generates u x)]
-      [(knowc u x)]
+      [(knowc knows u x)]
     )
   )
 )

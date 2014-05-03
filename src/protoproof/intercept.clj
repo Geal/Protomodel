@@ -46,35 +46,37 @@
   )
 )
 
-(defmacro know-transport-mitm [u x]
-  '(fresh [a tr]
-    (transport tr)
+(defmacro know-transport-mitm [knows u x]
+  `(fresh [a# tr#]
+    (transport tr#)
     ;(generates a x)
     (conde
       ; the message was not intercepted or dropped
       [
-        (sendmsg tr a u x)
-        (nafc dropped x)
-        (nafc replaced x)
+        (sendmsg tr# a# ~u ~x)
+        (nafc dropped ~x)
+        (nafc replaced ~x)
       ]
       ; the message was intercepted
-      [(fresh [m original]
-        (knows m x)
-        (sendmsg tr a u original)
-        (mitm tr m original x)
+      [(fresh [m# original#]
+        (~knows m# ~x)
+        (sendmsg tr# a# ~u original#)
+        (mitm tr# m# original# ~x)
       )]
       ; u is an eavesdropper
-      [(fresh [b]
-        (knows a x)
-        (listener tr u)
-        (sendmsg tr a b x)
+      [(fresh [b#]
+        (~knows a# ~x)
+        (listener tr# ~u)
+        (sendmsg tr# a# b# ~x)
       )]
       ; u is an intercepter
-      [(fresh [b]
-        (knows a x)
-        (intercepter tr u)
-        (sendmsg tr a b x)
+      [(fresh [b#]
+        (~knows a# ~x)
+        (intercepter tr# ~u)
+        (sendmsg tr# a# b# ~x)
       )]
     )
   )
 )
+
+;(macroexpand '(know-transport-mitm A B))

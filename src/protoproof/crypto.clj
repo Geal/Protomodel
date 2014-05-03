@@ -43,42 +43,42 @@
   )
 )
 
-(defmacro knowc [u x]
-  '(conde
+(defmacro knowc [knows u x]
+  `(conde
     ; g is a known power
-    [(fresh [g w]
-      (knows u g)
-      (knows u w)
-      (gpow g w x)
+    [(fresh [g# w#]
+      (~knows ~u g#)
+      (~knows ~u w#)
+      (gpow g# w# ~x)
     )]
     ; we know a preimage
-    [(fresh [alg prev]
-      (knows u prev)
-      (hashing alg prev x)
+    [(fresh [alg# prev#]
+      (~knows ~u prev#)
+      (hashing alg# prev# ~x)
     )]
     ; x is a ciphertext for which we know the key
-    [(fresh [alg prev k]
-      (knows u prev)
-      (knows u k)
-      (sym-enc alg k prev x)
+    [(fresh [alg# prev# k#]
+      (~knows ~u prev#)
+      (~knows ~u k#)
+      (sym-enc alg# k# prev# ~x)
     )]
-    [(fresh [alg ciphertext k]
-      (knows u ciphertext)
-      (knows u k)
-      (sym-dec alg k ciphertext x)
+    [(fresh [alg# ciphertext# k#]
+      (~knows ~u ciphertext#)
+      (~knows ~u k#)
+      (sym-dec alg# k# ciphertext# ~x)
     )]
     ; x is a ciphertext for which we know the public key
-    [(fresh [alg priv pub plaintext]
-      (knows u plaintext)
-      (knows u pub)
-      (asym-keys alg priv pub)
-      (asym-enc alg pub plaintext x)
+    [(fresh [alg# priv# pub# plaintext#]
+      (~knows ~u plaintext#)
+      (~knows ~u pub#)
+      (asym-keys alg# priv# pub#)
+      (asym-enc alg# pub# plaintext# ~x)
     )]
-    [(fresh [alg priv pub ciphertext]
-      (knows u ciphertext)
-      (knows u priv)
-      (asym-keys alg priv pub)
-      (asym-dec alg priv ciphertext x)
+    [(fresh [alg# priv# pub# ciphertext#]
+      (~knows ~u ciphertext#)
+      (~knows ~u priv#)
+      (asym-keys alg# priv# pub#)
+      (asym-dec alg# priv# ciphertext# ~x)
     )]
   )
 )
