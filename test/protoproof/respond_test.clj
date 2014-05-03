@@ -38,7 +38,6 @@
       [
         (fresh[previous]
           (sentmessage tr bob alice previous)
-          ;(sendmsg tr bob alice previous)
           (generates alice message)
           (successor previous message)
         )
@@ -47,40 +46,12 @@
   )
 )
 
-(with-dbs [users protocol]
-  (run* [q] (all (respondmsg 'tr 'Bob 'Alice q)))
-)
-
 (def knows
   (tabled [u x]
     (conde
       [(generates u x)]
       [(know-transport-mitm knows u x)]
     )
-  )
-)
-
-(with-dbs [users protocol]
-  (run* [q] (all (knows q 'def2)))
-)
-
-(with-dbs [users protocol]
-  (run* [q] (all
-    (fresh [previous alice]
-      (sentmessage 'tr alice 'Bob previous)
-      (generates 'Bob q)
-      (successor previous q)
-    ))
-  )
-)
-
-(with-dbs [users protocol]
-  (run* [q] (all
-    (fresh [previous bob alice]
-      (sentmessage 'tr alice bob previous)
-      (generates bob q)
-      (successor previous q)
-    ))
   )
 )
 

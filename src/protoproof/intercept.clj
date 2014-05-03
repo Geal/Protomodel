@@ -25,37 +25,26 @@
 
 (defmacro sentmessage [transport alice bob message]
   `(conde
-;(defmacro sentmessage [transport alice bob message]
-;  `(tabled [~transport ~alice ~bob ~message]
-;    (conde
     ((sendmsg ~transport ~alice ~bob ~message))
     ((~'respondmsg ~transport ~alice ~bob ~message))
   )
 )
 
-;(macroexpand '(sentmessage tr A B M))
-
 (defmacro recv-mitm [transport bob message]
   `(conde
-;(defn recv-mitm [transport bob message]
-;  (conde
     ; the message was not dropped or replaced
     [(fresh [alice#]
       (sentmessage ~transport alice# ~bob ~message)
-      ;(sendmsg ~transport alice# ~bob ~message)
       (nafc dropped ~message)
       (nafc replaced ~message)
     )]
     ; this is a replaced message
     [(fresh [alice# mallory# original#]
       (sentmessage ~transport alice# ~bob original#)
-      ;(sendmsg ~transport alice# ~bob original#)
       (mitm ~transport mallory# original# ~message)
     )]
   )
 )
-
-;(macroexpand '(recv-mitm TR B M))
 
 (defn eavesdrop-mitm [tr m x]
   (fresh [a b]
@@ -67,7 +56,6 @@
 (defmacro know-transport-mitm [knows u x]
   `(fresh [a# tr#]
     (transport tr#)
-    ;(generates a x)
     (conde
       ; the message was not intercepted or dropped
       [
@@ -78,7 +66,6 @@
       ; the message was intercepted
       [(fresh [m# original#]
         (~knows m# ~x)
-        ;(sendmsg tr# a# ~u original#)
         (sentmessage tr# a# ~u original#)
         (mitm tr# m# original# ~x)
       )]
@@ -86,18 +73,15 @@
       [(fresh [b#]
         (~knows a# ~x)
         (listener tr# ~u)
-        ;(sendmsg tr# a# b# ~x)
         (sentmessage tr# a# b# ~x)
       )]
       ; u is an intercepter
       [(fresh [b#]
         (~knows a# ~x)
         (intercepter tr# ~u)
-        ;(sendmsg tr# a# b# ~x)
         (sentmessage tr# a# b# ~x)
       )]
     )
   )
 )
 
-;(macroexpand '(know-transport-mitm A B))
